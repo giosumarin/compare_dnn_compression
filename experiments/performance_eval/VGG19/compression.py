@@ -34,10 +34,12 @@ tf.random.set_seed(SEED)
 @click.option('--lambd', default=0., help='coefficient for entrophy with ECSQ')
 @click.option('--logger', default=False, help='set True for logging train into txt')
 @click.option('--ptnc', default=0, help='patience (default 0)')
+@click.option('--mib', default=False, help='min is better, set to True if your primary metrics is a loss')
+
 
 
 # This script does not excercise old non-unified methods. Check https://github.com/giosumarin/ICPR2020_sHAM for those
-def main(compression, net, dataset, learning_rate, lr_cumulative, minibatch, prfc, prcnn, clusterfc, clustercnn, tr, lambd, logger, ptnc):
+def main(compression, net, dataset, learning_rate, lr_cumulative, minibatch, prfc, prcnn, clusterfc, clustercnn, tr, lambd, logger, ptnc, mib):
 
     # Load model
     model = tf.keras.models.load_model(net)
@@ -115,7 +117,7 @@ def main(compression, net, dataset, learning_rate, lr_cumulative, minibatch, prf
     if compression == "pr":
         compression_model.train_pr(epochs=100, dataset=dataset, X_train=x_train, y_train=y_train, X_test=x_test, y_test=y_test, step_per_epoch = step_per_epoch, patience=0)
     else:
-        compression_model.train_ws(epochs=30, lr=lr_cumulative, dataset=dataset, X_train=x_train, y_train=y_train, X_test=x_test, y_test=y_test, patience=ptnc, min_is_better=False, threshold=tr, step_per_epoch=step_per_epoch, pruPWS_train=True if compression == "pruPWS" else False)
+        compression_model.train_ws(epochs=30, lr=lr_cumulative, dataset=dataset, X_train=x_train, y_train=y_train, X_test=x_test, y_test=y_test, patience=ptnc, min_is_better=mib, threshold=tr, step_per_epoch=step_per_epoch, pruPWS_train=True if compression == "pruPWS" else False)
 
     # Model save
     name_net = (net.split("/")[-1])[:-3]

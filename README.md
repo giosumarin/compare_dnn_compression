@@ -1,24 +1,16 @@
-# Compact representations of convolutional neural networks via weight pruning and quantization
+# On the Choice of Deep Neural Networks Compression: a Comparative Study
 This repository contains the code allowing to reproduce the results described in G. Marinò et al.,
-_Compact representations of convolutional neural networks via weight pruning and quantization_, 
+_On the Choice of Deep Neural Networks Compression: a Comparative Study_, 
 extending the conference paper presented at [ICPR2020](https://www.micc.unifi.it/icpr2020/), whose package and paper are available at [this repository](https://github.com/giosumarin/ICPR2020_sHAM).
 
 This package improves the previous contribution by adding new quantization strategies, and  
 Convolutional Layers are now supported in addition to Fully Connected layers.
 
 ################### abbiamo anche introdotto SLR
-We also introduced a new optimized dot procedure, written in C++, reducing the overal execution
-time for training and testing HAM and sHAM compressed models, and a comparison with other matrix compression methods.
+We also introduced Sparse Low Rark Factorization: a compression technique, for dense layers,  based on Single Value Decomposition.
 
 The `experiments` folder contains the basic scripts used for performing the tests presented in the
 presented paper.
-
-
-############################# GUARDO GLI ESEMPI
-############################# COME USARE
-######################################### se vuoi classificare vai qui, modificare, scrivere di compression.py help
-######################################## se vuoi un nuovo dataset fai così, come passare il modello
-######################################## dire anche che funziona con versioni python e tensorflow >= alle versioni indicate
 
 
 ## Getting Started
@@ -28,69 +20,35 @@ presented paper.
 * Install `python3`, `python3-pip` and `python3-venv` (Debian 10.6).
 * Make sure that `python --version` starts by 3 or execute `alias python='pyhton3'` in the shell.
 * For CUDA configuration (if a GPU is available) follow https://www.tensorflow.org/install/gpu.
-* Create a virtual environment and install the required depedencies: `pip install tensorflow==2.2.0 click==8.0.1 matplotlib==3.4.3 sklearn numpy==1.20 numba==0.54.0 pympler==0.9 pytest`. The set of suggested dependencies have been tested with Python 3.7.
+* Create a virtual environment and install the required depedencies: `pip install tensorflow==2.2.0 click==8.0.1 matplotlib==3.4.3 sklearn numpy==1.20 numba==0.54.0 pympler==0.9 pytest`. The set of suggested dependencies have been tested with Python 3.7. We also ran the code with later versions of python and tensorflow more recent than the ones mentioned above.
 * Finally, from the root of this repository, install the Python package through pip: `pip install ./sHAM_package`.
-
-### Compiling megaDot
-At present time, the installation of the main Python package does not trigger the automatic compilation of the
-optimized C++ dot procedure, which must be manually compiled. However, we use
-`cmake` for downloading and compiling all the c++ code dependencies.
-For this reason, the only requirements are the installation of `make`, `cmake` and of a relatively
-new C++ compiler (code was tested with various releases of `g++` > 5.4.0)
-
-From the root of this repository:
-* create a build directory:  `mkdir build & cd build`,
-* call cmake:  `cmake ../megaDot`,
-* compile:  `make`.
-
-This procedure generates the `libmegaDot.so` library file that can be imported in any Python script
-as `from libmegaDot import dotp_cpp, dotp_cpp_sparse`. **Note**: The provided CMakeList configures the
-compiler to create a library that can be executed only on architectures featuring at least AVX2 instructions.
-If the program crashes with "illegal instruction" errors (SIGILL), the target CPU may not be 
-supported by the defalut options. In this case, try modifying the [CMakeLists file](megaDot/CMakeLists.txt),
-line 15 from:
-```
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mavx2")
-```
-to:
-```
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mavx")
-```
-or comment it altogether, and recompile the library.
-
-A pre-compiled version for Linux x86-64 is present
-in the `experiments/time_space` directory, that is to be overwritten by a locally compiled version, since runtime issues 
-will arise when the Python3 version (used to complile it) is different than the one in use on the local machine.
-
 
 ### Additional data
 The trained models -- as well as data required by DeepDTA -- are rather big, so they are not versioned. Rather, 
-they are available for [download](https://mega.nz/file/jkcmyJAB#XHIRNpGP7_iaK9Y_6ZjMk_5RhtnZ4I0FId9R6mjy7KY).
-Once downloaded, move the `sHAM_data.zip` to the root of this repository and unzip it: `unzip sHAM_data.zip`.
-By doing so, the trained models and all the supporting data will be copied to the correct locations inside
-the directory tree.
+they are available for download. You need to use this command `curl https://transfer.sh/TkeubF/experiments.zip -o experiments.zip` in your terminal or directly [download](https://transfer.sh/TkeubF/experiments.zip)
 
 ## Usage
 Pruning/quantization and network compression are separately executed in two stages.
 1. To apply pruning and/or quantization to a model, we provide the `compression.py` script in the
 `experiments/performance_eval/X` directory, where `X` is one of `VGG19` and `DeepDTA`. 
-These scripts are customized for VGG and DeepDTA networks, and a minimal runner script is contained 
+These scripts are customized for VGG19 and DeepDTA networks, and a minimal runner script is contained 
 in each network sub-directory. The original models can be found in the downloaded archive, 
 folder `sHAM_data/experiments/performance_eval/X/original_nets`. You need to copy the content of folders 
 `data_utils` and `original_nets` in the homonymous folders here for `DeepDTA`, and just `orginal_nets` per `VGG19`. 
 2. To compress a trained network with either HAM or sHAM we provide the `uws_testing_time_space.py`
 example script in the `experiments/time_space directory`, as well with a sample runner script. Please note that this 
 script must be executed after those at point 1, since they generate the compressed models to be evaluated
-here and the corresponding folders. If at point 1 only partial tests are executed, modify this script accordingly to evaluate just 
-the model generated.
+here and the corresponding folders. If at point 1 only partial tests are executed, modify this script accordingly to
+evaluate just  the model generated.
 
-The directory `experiments/SOTA_comparison` contains a script which compares HAM and sHAM to several
-other compression methods from the literature. Comparison takes into account compression ratios and
-execution times of a dot product on the Fully Connected layers of a trained VGG model.
-To use the script:
-* copy a trained VGG .h5 model file into the `experiments/SOTA_comparison/csv_data` directory,
-* run the `generate_csv.py` script,
-* run the `compare_VGG.py` script.
+## Usage on other neural network/datasets
+
+To perform a compression on a new model follow the following steps:
+1. Train the model and save it via `model.save ('retrain.h5')`.
+2. Go to [experiments/performance_eval/VGG19](https://github.com/giosumarin/compare_dnn_compression/tree/main/experiments/performance_eval/VGG19)
+3. Add a new function related to your dataset to the `datasets.py` script
+4. open the `compression.py` script, add the import of the function created at the point above (line 7), add a new branch to the` if` for choosing the dataset (line 67), modify the optimizer if necessary and the loss for retraining after compression (lines 108 and 109, for optimization we noticed better performance when using the same optimizer as the model you want to compress with a slightly lower learning rate, as happens with tranfer learning).
+5. You are now ready to run the compression.py script, to see the various necessary settings you can run `python compression.py --help`, the re-training when using patience is based on the first metric you compiled the original model
 
 
 ### License
