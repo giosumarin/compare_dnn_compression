@@ -24,7 +24,8 @@ presented paper.
 
 ### Additional data
 The trained models -- as well as data required by DeepDTA -- are rather big, so they are not versioned. Rather, 
-they are available for download. You need to use this command `curl https://transfer.sh/TkeubF/experiments.zip -o experiments.zip` in your terminal or directly [download](https://transfer.sh/TkeubF/experiments.zip)
+they are available for download. You need to use this command `curl https://transfer.sh/TkeubF/experiments.zip -o experiments.zip` in your terminal or directly [download](https://transfer.sh/TkeubF/experiments.zip). 
+Extract the downloaded zip and merge it into the `experiments` directory.
 
 ## Usage
 Pruning/quantization and network compression are separately executed in two stages.
