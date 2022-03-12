@@ -6,7 +6,6 @@ extending the conference paper presented at [ICPR2020](https://www.micc.unifi.it
 This package improves the previous contribution by adding new quantization strategies, and  
 Convolutional Layers are now supported in addition to Fully Connected layers.
 
-################### abbiamo anche introdotto SLR
 We also introduced Sparse Low Rark Factorization: a compression technique, for dense layers,  based on Single Value Decomposition.
 
 The `experiments` folder contains the basic scripts used for performing the tests presented in the
@@ -35,8 +34,8 @@ These scripts are customized for VGG19 and DeepDTA networks, and a minimal runne
 in each network sub-directory. The original models can be found in the downloaded archive, 
 folder `sHAM_data/experiments/performance_eval/X/original_nets`. You need to copy the content of folders 
 `data_utils` and `original_nets` in the homonymous folders here for `DeepDTA`, and just `orginal_nets` per `VGG19`. 
-2. To compress a trained network with either HAM or sHAM we provide the `uws_testing_time_space.py`
-example script in the `experiments/time_space directory`, as well with a sample runner script. Please note that this 
+2. To compress a trained network with either HAM or sHAM we provide the `uws_testing_space.py`
+example script in the `experiments/space_performance directory`, as well with a sample runner script. Please note that this 
 script must be executed after those at point 1, since they generate the compressed models to be evaluated
 here and the corresponding folders. If at point 1 only partial tests are executed, modify this script accordingly to
 evaluate just  the model generated.
@@ -47,9 +46,9 @@ To perform a compression on a new model follow the following steps:
 1. Train the model and save it via `model.save ('retrain.h5')`.
 2. Go to [experiments/performance_eval/VGG19](https://github.com/giosumarin/compare_dnn_compression/tree/main/experiments/performance_eval/VGG19)
 3. Add a new function related to your dataset to the `datasets.py` script
-4. open the `compression.py` script, add the import of the function created at the point above (line 7), add a new branch to the` if` for choosing the dataset (line 67), modify the optimizer if necessary and the loss for retraining after compression (lines 108 and 109, for optimization we noticed better performance when using the same optimizer as the model you want to compress with a slightly lower learning rate, as happens with tranfer learning).
+4. open the `compression.py` script, add the import of the function created at the point above (line 7), add a new branch to the `if` for choosing the dataset (line 67), modify the optimizer if necessary and the loss for retraining after compression (lines 108 and 109, for optimization we noticed better performance when using the same optimizer as the model you want to compress with a slightly lower learning rate, as happens with tranfer learning).
 5. You are now ready to run the compression.py script, to see the various necessary settings you can run `python compression.py --help`, the re-training when using patience is based on the first metric you compiled the original model
 
 
 ### License
-This software is distributed under the [Apache-2.0 License](https://github.com/AnacletoLAB/sHAM/blob/main/README.md).
+This software is distributed under the [Apache-2.0 License](https://github.com/giosumarin/compare_dnn_compression/blob/main/LICENSE).
