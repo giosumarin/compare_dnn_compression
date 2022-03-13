@@ -4,12 +4,12 @@ _On the Choice of Deep Neural Networks Compression: a Comparative Study_,
 extending the conference paper presented at [ICPR2020](https://www.micc.unifi.it/icpr2020/), whose package and paper are available at [this repository](https://github.com/giosumarin/ICPR2020_sHAM).
 
 This package improves the previous contribution by adding new quantization strategies, and  
-Convolutional Layers are now supported in addition to Fully Connected layers.
+convolutional layers are now supported in addition to fully-connected layers.
 
-We also introduced Sparse Low Rark Factorization: a compression technique, for dense layers,  based on Single Value Decomposition.
+We also included the method Sparse Low-Rank Factorization (SLR) to the comparison.
 
-The `experiments` folder contains the basic scripts used for performing the tests presented in the
-presented paper.
+The `experiments` folder contains the basic scripts to replicate the tests carried out in the
+our paper.
 
 
 ## Getting Started
