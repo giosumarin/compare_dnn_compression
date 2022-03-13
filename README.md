@@ -24,19 +24,19 @@ our paper.
 
 ### Additional data
 The trained models -- as well as data required by DeepDTA -- are rather big, so they are not versioned. Rather, 
-they are available for download. You need to use this command `curl https://transfer.sh/TkeubF/experiments.zip -o experiments.zip` in your terminal or directly [download](https://transfer.sh/TkeubF/experiments.zip). 
+they are available for download. You need to use this command `curl https://transfer.sh/TkeubF/experiments.zip -o experiments.zip` in your terminal or directly [download](https://transfer.sh/TkeubF/experiments.zip) it. 
 Extract the downloaded zip and merge it into the `experiments` directory.
 
 ## Usage
-Pruning/quantization and network compression are separately executed in two stages.
-1. To apply pruning and/or quantization to a model, we provide the `compression.py` script in the
+Compression and compact storage of the network are separately executed in two stages.
+1. To apply pruning, quantization or SLR to a model, we provide the `compression.py` script in the
 `experiments/performance_eval/X` directory, where `X` is one of `VGG19` and `DeepDTA`. 
 These scripts are customized for VGG19 and DeepDTA networks, and a minimal runner script is contained 
 in each network sub-directory. The original models can be found in the downloaded archive, 
 folder `sHAM_data/experiments/performance_eval/X/original_nets`. You need to copy the content of folders 
 `data_utils` and `original_nets` in the homonymous folders here for `DeepDTA`, and just `orginal_nets` per `VGG19`. 
-2. To compress a trained network with either HAM or sHAM we provide the `uws_testing_space.py`
-example script in the `experiments/space_performance directory`, as well with a sample runner script. Please note that this 
+2. To store and evaluate the trained network with either HAM or sHAM we provide the `uws_testing_space.py`
+example script in the `experiments/space_performance` directory, as well with a sample runner script. Please note that this 
 script must be executed after those at point 1, since they generate the compressed models to be evaluated
 here and the corresponding folders. If at point 1 only partial tests are executed, modify this script accordingly to
 evaluate just  the model generated.
