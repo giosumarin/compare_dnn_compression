@@ -47,7 +47,7 @@ To perform a compression on a new model follow the following steps:
 1. Train the model and save it via `model.save ('retrain.h5')`.
 2. Go to [experiments/performance_eval/VGG19](https://github.com/giosumarin/compare_dnn_compression/tree/main/experiments/performance_eval/VGG19)
 3. Add a new function related to your dataset to the `datasets.py` script
-4. open the `compression.py` script, add the import of the function created at the point above (line 7), add a new branch to the `if` for choosing the dataset (line 67), modify the optimizer if necessary and the loss for retraining after compression (lines 108 and 109, for optimization we noticed better performance when using the same optimizer as the model you want to compress with a slightly lower learning rate, as happens with tranfer learning).
+4. Open the `compression.py` script, add the import of the function created at the point above (line 7), add a new branch to the `if` for choosing the dataset (line 67), modify the optimizer if necessary and the loss for retraining after compression (lines 108 and 109, for optimization we noticed better performance when using the same optimizer as the model you want to compress with a slightly lower learning rate, as happens with tranfer learning).
 5. You are now ready to run the compression.py script, to see the various necessary settings you can run `python compression.py --help`, the re-training when using patience is based on the first metric you compiled the original model
 
 
