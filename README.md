@@ -24,7 +24,7 @@ our paper.
 
 ### Additional data
 The trained models -- as well as data required by DeepDTA -- are rather big, so they are not versioned. Rather, 
-they are available for download. You need to use this command `curl https://transfer.sh/TkeubF/experiments.zip -o experiments.zip` in your terminal or directly [download](https://transfer.sh/TkeubF/experiments.zip) it. 
+they are available for download. You need to use this command `wget https://download855.mediafire.com/5q5u0y5u6ytg/p9k6yz17jiodeej/experiments.zip` in your terminal or directly [download](https://www.mediafire.com/file/p9k6yz17jiodeej/experiments.zip/file) it. 
 Extract the downloaded zip and merge it into the `experiments` directory.
 
 ## Usage
