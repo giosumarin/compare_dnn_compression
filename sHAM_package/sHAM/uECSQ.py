@@ -24,9 +24,6 @@ def ECSQ(weights_to_quantize, k, wanted_clusters, lambd=0.5, tr=0.001):
     idx_layers = [np.zeros_like(w, dtype='int16') for w in weights_to_quantize]
     stacked_idx = [np.vstack(idx) for idx in idx_layers]
     vect_idx = np.concatenate(stacked_idx, axis=None)
-    print(vect_idx.shape)
-    print(vect_weights.shape)
-
     
     
     shift = 0
@@ -34,15 +31,12 @@ def ECSQ(weights_to_quantize, k, wanted_clusters, lambd=0.5, tr=0.001):
         vect_idx[shift:shift+len(w_split[i])] = i
         shift += len(w_split[i])
 
-    print("shifted")
 
     also_run = True
     counter = 0
     while also_run:
         counter+=1
-        print(counter)
-        if counter >= 30:
-            print("breaked")
+        if counter >= 50:
             also_run = False
         with errstate(divide='ignore'):
             j_t = np.abs(np.subtract(vect_weights,c))-lambd*np.log(p)
@@ -65,7 +59,6 @@ def ECSQ(weights_to_quantize, k, wanted_clusters, lambd=0.5, tr=0.001):
         if J_last - J <= tr or wanted_clusters >= len(c[c!=-inf]):
             also_run = False
         J_last = J
-    print(counter, len(c[c!=-inf]))
     new_vect_idx = np.copy(vect_idx)
     for i_c in range(len(c)):
         if c[i_c] == -inf:
@@ -73,7 +66,6 @@ def ECSQ(weights_to_quantize, k, wanted_clusters, lambd=0.5, tr=0.001):
 
     c = (c[(c != -inf)].reshape(-1,1))
 
-    print(len(c))
 
     idx_layers = []
     for s in dim_weights:
@@ -106,20 +98,15 @@ class uECSQ(uCWS.uCWS):
         # Dense layers
         if self.clusters_fc > 0:
             self.idx_layers_fc, self.centers_fc, self.clusters_fc = self.apply_private_uecsq(Dense, self.clusters_fc, self.wanted_clusters_fc, self.lamb_fc)
-            print("lunghezza lista idx ",len(self.idx_layers_fc))
         # Convolutional layers
         if self.clusters_cnn > 0:
             self.idx_layers_cnn, self.centers_cnn, self.clusters_cnn = self.apply_private_uecsq((Conv1D, Conv2D, Conv3D), self.clusters_cnn, self.wanted_clusters_cnn, self.lamb_cnn)
-        print("applied_last")
 
     def apply_private_uecsq(self, instan, perc, wanted_clusters, lamb):
         massive_weight_list = self.extract_weights(instan, perc)
-        print("extracted")
         centers, idx_layers = ECSQ(massive_weight_list, k=perc, wanted_clusters=wanted_clusters, lambd=lamb, tr=self.tr)
-        print("applied")
         perc = len(centers)
         self.recompose_weight(instan, perc, centers, idx_layers)
-        print("recomposed")
 
         return idx_layers, centers, perc
 
@@ -131,24 +118,19 @@ class uECSQ(uCWS.uCWS):
         if self.clusters_cnn > 0:
             print("Tuning CNN lambda")
             self.lamb_cnn = self.tune_lambda_private_uecsq(lambdaList, (Conv1D, Conv2D, Conv3D), self.clusters_cnn, self.wanted_clusters_cnn)
-        print("finito tune")
 
     def tune_lambda_private_uecsq(self, lambdaList, instan, perc, wanted_clusters):
         final_lambd = 0.
         abs_distance = 10000
         for i, lam in enumerate(lambdaList):
-            print(lam, end=' ')
             massive_weight_list = self.extract_weights(instan, perc)
             len(massive_weight_list)
             c, _ = ECSQ(massive_weight_list, k=3*wanted_clusters, wanted_clusters=wanted_clusters, lambd=lam, tr=self.tr)
-            # print(len(c))
             if len(c) >= wanted_clusters:
                 if i == 0:
                     final_lambd = lambdaList[i]
-                    print("dentro if")
                 else:
                     final_lambd = lambdaList[i] if (abs(len(c) - wanted_clusters) <= abs_distance) else lambdaList[i-1]
-                print("best", final_lambd)
                 break
             abs_distance = abs(len(c) - wanted_clusters)
         if final_lambd == 0:
