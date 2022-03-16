@@ -1,4 +1,5 @@
 import re
+from tabnanny import verbose
 import time
 
 import numpy as np
@@ -107,7 +108,7 @@ class uCWS(compressed_nn.Compressed_NN):
         self.optimizer.apply_gradients(zip(grads, self.model.trainable_weights))
 
     def evaluate_internal(self, x, y):
-        res = self.model.evaluate(x, y)
+        res = self.model.evaluate(x, y, verbose=0)
         return res if isinstance(res, float) else res[-1]
 
     def train_ws(self, epochs, lr, dataset, X_train, y_train, X_test, y_test, step_per_epoch=None, patience=-1, best_model=True, min_is_better=True, threshold=0.0001, pruPWS_train=False):
