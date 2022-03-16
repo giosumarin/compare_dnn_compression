@@ -38,9 +38,9 @@ class pruning(compressed_nn.Compressed_NN):
         denseKern_re = re.compile("((fc)|(dense)|(predictions)).*kernel.*")
         lista_handle = [x._handle_name for x in self.model.trainable_weights]
         for i in range(len(lista_handle)):
-            if (self.perc_prun_for_cnn is not 0) and (convKern_re.match(lista_handle[i]) is not None):
+            if (self.perc_prun_for_cnn != 0) and (convKern_re.match(lista_handle[i]) != None):
                 outList.append(i)
-            elif (self.perc_prun_for_dense is not 0) and (denseKern_re.match(lista_handle[i]) is not None):
+            elif (self.perc_prun_for_dense != 0) and (denseKern_re.match(lista_handle[i]) != None):
                 outList.append(i)
         return outList
 
@@ -58,7 +58,7 @@ class pruning(compressed_nn.Compressed_NN):
                 ww = layer.get_weights()[0]
                 W_pruned, mask = pruning_f(ww, self.perc_prun_for_cnn)
                 self.masks_cnn.append(mask)
-                if self.perc_prun_for_cnn is not 0: # Devo fare così per risolvere bug in update_centers_and_recompose di pruning_weightsharing
+                if self.perc_prun_for_cnn != 0: 
                     if len(layer.get_weights()) > 1:
                         layer.set_weights([W_pruned, layer.get_weights()[1]])
                     else:
@@ -69,7 +69,7 @@ class pruning(compressed_nn.Compressed_NN):
                 ww = layer.get_weights()[0]
                 W_pruned, mask = pruning_f(ww, self.perc_prun_for_dense)
                 self.masks_fc.append(mask)
-                if self.perc_prun_for_dense is not 0:
+                if self.perc_prun_for_dense != 0:
                     if len(layer.get_weights()) > 1:
                         layer.set_weights([W_pruned, layer.get_weights()[1]])
                     else:
