@@ -121,7 +121,7 @@ def main(compression, net, dataset, learning_rate, lr_cumulative, minibatch, prf
 
     # Post-compression prediction assessment
     compression_model.set_loss(tf.keras.losses.CategoricalCrossentropy())
-    compression_model.set_optimizer(tf.keras.optimizers.SGD(lr=learning_rate, momentum=0.9, nesterov=True))
+    compression_model.set_optimizer(tf.keras.optimizers.SGD(learning_rate=learning_rate, momentum=0.9, nesterov=True))
     post_compr_train = compression_model.model.evaluate(x_train, y_train, verbose=0)[1]
     post_compr_test = compression_model.model.evaluate(x_test, y_test, verbose=0)[1]
     #print("Applying initial compression setting before retrain, performance on train -->" , round(post_compr_train,5))
