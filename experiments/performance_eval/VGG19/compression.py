@@ -85,7 +85,7 @@ def main(compression, net, dataset, learning_rate, lr_cumulative, minibatch, prf
     elif dataset == "CIFAR100":
         dataset, x_train, y_train, x_test, y_test = CIFAR100(minibatch)
         step_per_epoch = x_train.shape[0] // minibatch
-        print("step_per_epoch: ",step_per_epoch)
+        #print("step_per_epoch: ",step_per_epoch)
 
     # Pre-compression prediction assessment
     pre_compr_train = compression_model.model.evaluate(x_train, y_train, verbose=0)[1]
