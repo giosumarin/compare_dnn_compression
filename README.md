@@ -24,17 +24,15 @@ our paper.
 
 ### Additional data
 The trained models -- as well as data required by DeepDTA -- are rather big, so they are not versioned. Rather, 
-they are available for download. You need to use this command `wget https://download855.mediafire.com/5q5u0y5u6ytg/p9k6yz17jiodeej/experiments.zip` in your terminal or directly [download](https://www.mediafire.com/file/p9k6yz17jiodeej/experiments.zip/file) it. 
+they are available for download. You need to [download](https://www.mediafire.com/file/fcd92fohngitd0k/experiments.zip/file) it. 
 Extract the downloaded zip and merge it into the `experiments` directory.
 
 ## Usage
 Compression and compact storage of the network are separately executed in two stages.
-1. To apply pruning, quantization or SLR to a model, we provide the `compression.py` script in the
+1. To apply pruning and/or quantization to a model, we provide the `compression.py` script in the
 `experiments/performance_eval/X` directory, where `X` is one of `VGG19` and `DeepDTA`. 
 These scripts are customized for VGG19 and DeepDTA networks, and a minimal runner script is contained 
-in each network sub-directory. The original models can be found in the downloaded archive, 
-folder `sHAM_data/experiments/performance_eval/X/original_nets`. You need to copy the content of folders 
-`data_utils` and `original_nets` in the homonymous folders here for `DeepDTA`, and just `orginal_nets` per `VGG19`. 
+in each network sub-directory. The script to apply SLR, which does not require retraining, is `experiments/space_performance/uws_slrf_space.py`. This script can be used on a model with quantized convolutional layers or directly on an uncompressed model.
 2. To store and evaluate the trained network with either HAM or sHAM we provide the `uws_testing_space.py`
 example script in the `experiments/space_performance` directory, as well with a sample runner script. Please note that this 
 script must be executed after those at point 1, since they generate the compressed models to be evaluated
@@ -44,7 +42,7 @@ evaluate just  the model generated.
 ## Usage on other neural network/datasets
 
 To perform a compression on a new model follow the following steps:
-1. Train the model and save it via `model.save ('retrain.h5')`.
+1. Train the model and save it via `model.save('model_name.h5')`.
 2. Go to [experiments/performance_eval/VGG19](https://github.com/giosumarin/compare_dnn_compression/tree/main/experiments/performance_eval/VGG19)
 3. Add a new function related to your dataset to the `datasets.py` script
 4. Open the `compression.py` script, add the import of the function created at the point above (line 7), add a new branch to the `if` for choosing the dataset (line 67), modify the optimizer if necessary and the loss for retraining after compression (lines 108 and 109, for optimization we noticed better performance when using the same optimizer as the model you want to compress with a slightly lower learning rate, as happens with tranfer learning).
