@@ -121,7 +121,6 @@ class DataSet(object):
   def read_sets(self, dataset_path, problem_type): ### fpath should be the dataset folder /kiba/ or /davis/
     fpath = dataset_path
     setting_no = problem_type
-    print("Reading %s start" % fpath)
 
     test_fold = json.load(open(fpath + "folds/test_fold_setting" + str(setting_no)+".txt"))
     train_folds = json.load(open(fpath + "folds/train_fold_setting" + str(setting_no)+".txt"))
@@ -130,7 +129,6 @@ class DataSet(object):
 
   def parse_data(self, dataset_path, is_log, with_label=True):
     fpath = dataset_path
-    print("Read %s start" % fpath)
 
     ligands = json.load(open(fpath+"ligands_can.txt"), object_pairs_hook=OrderedDict)
     proteins = json.load(open(fpath+"proteins.txt"), object_pairs_hook=OrderedDict)
