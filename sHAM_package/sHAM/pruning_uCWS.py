@@ -1,3 +1,4 @@
+import gc
 import os
 import time
 
@@ -79,6 +80,7 @@ class pruning_uCWS(pruning.pruning, uCWS.uCWS):
             self.acc_test = []
             STOP = False
             for epoch in range(epochs):
+                gc.collect()
                 if STOP == True:
                     break
                 for (batch, (images, labels)) in enumerate(dataset):

@@ -1,9 +1,9 @@
+import gc
 import re
 import time
 
 import numpy as np
 import tensorflow as tf
-import tensorflow
 from tensorflow.keras.layers import Conv1D, Conv2D, Conv3D, Dense
 from sklearn.cluster import MiniBatchKMeans
 from sklearn.cluster import KMeans
@@ -118,6 +118,7 @@ class uCWS(compressed_nn.Compressed_NN):
             self.acc_test = []
             STOP = False
             for epoch in range(epochs):
+                gc.collect()
                 if STOP == True:
                     break
                 for (batch, (images, labels)) in enumerate(dataset):
