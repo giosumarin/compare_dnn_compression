@@ -110,7 +110,7 @@ def space_slrf(model, keep, sr, rr, x_test, y_test):
         compr_space += (tU.size+tS.size+tV.size)*32/8
         original_space += dense_space(lw[i])
     model.set_weights(lw)
-    score = model.evaluate(x_test, y_test)
+    score = model.evaluate(x_test, y_test, verbose=0)
     if type(score) == list:
         score = score[-1]
     
@@ -128,7 +128,16 @@ def space_slrf(model, keep, sr, rr, x_test, y_test):
 
 def main(compression, net, dataset, directory, keep,sr,rr):
     
-    print(compression, net, dataset, directory, keep,sr,rr)
+    #print(compression, net, dataset, directory, keep,sr,rr)
+    net_string = net.split('/')[-1][:-3]
+    if net_string == "deepDTA_davis":
+        net_string = "DeepDTA-DAVIS"
+    elif net_string == "deepDTA_kiba":
+        net_string = "DeepDTA-KIBA"
+    print(f"Model-Dataset: {net_string}")
+    print(f"Compression Method: SLR")
+    print(f"Params of SLR --> q: {keep}, sr: {sr}, rr: {rr}")
+
 
     # Load model
     model = tf.keras.models.load_model(net)
@@ -238,9 +247,11 @@ def main(compression, net, dataset, directory, keep,sr,rr):
         x_train = x_train.astype('float32')
         x_test = x_test.astype('float32')
 
-    original_acc = model.evaluate(x_test, y_test)
+    original_acc = model.evaluate(x_test, y_test, verbose=0)
     if isinstance(original_acc, list):
         original_acc = original_acc[1]
+    print(f"Performance test before compression: {round(original_acc, 5)}")
+
     
     if compression == "also_quant":
         perf = []
@@ -260,19 +271,22 @@ def main(compression, net, dataset, directory, keep,sr,rr):
                 all_vect_weights = np.concatenate(vect_weights, axis=None).reshape(-1,1)
                 uniques = np.unique(all_vect_weights)
                 num_values = len(uniques)
-                print(num_values)
+                #print(num_values)
                 space_compr_cnn = (num_values*32 + math.ceil(np.log2(num_values)) * sum([lw[i].size for i in cnnIdx])) / 8
                 pr, ws, acc = split_filename(weights)
                 ws_acc = float(acc[:-3])
-                print("{}% & {} --> {}".format(pr, ws, ws_acc))
+                #print("{}% & {} --> {}".format(pr, ws, ws_acc))
                 
                 score, compr_space, original_space = space_slrf(model, keep, sr, rr, x_test, y_test)
 
-                print(weights, score, compr_space, original_space)
+                #print(weights, score, compr_space, original_space)
 
                 perf += [score]
                 compr_spaces += [round((space_compr_cnn+compr_space)/(space_expanded_cnn+original_space), 5)]
                 wss += [ws]
+                print(f"Performance test after compression: {round(score, 5)}")
+                print(f"psi: {compr_spaces[-1]}")
+
 
 
         file_res = f"results//res.txt"
@@ -283,7 +297,10 @@ def main(compression, net, dataset, directory, keep,sr,rr):
 
     else:
         score, compr_space, original_space = space_slrf(model, keep, sr, rr, x_test, y_test)
-        print(score, compr_space, original_space)
+        #print(score, compr_space, original_space)
+        print(f"Performance test after compression: f{score}")
+        print(f"psi: f{round(compr_space/original_space, 5)}")
+
 
 
 if __name__ == '__main__':
