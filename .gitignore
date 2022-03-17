@@ -4,4 +4,4 @@ experiments/performance_eval/VGG19/original_nets/*
 experiments/performance_eval/DeepDTA/original_nets/*
 experiments/performance_eval/DeepDTA/data_utils/kiba
 experiments/performance_eval/DeepDTA/data_utils/davis
-
+*.h5
