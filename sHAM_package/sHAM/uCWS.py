@@ -1,5 +1,4 @@
 import re
-from tabnanny import verbose
 import time
 
 import numpy as np
@@ -149,10 +148,10 @@ class uCWS(compressed_nn.Compressed_NN):
                 test_acc_epoch = self.evaluate_internal(X_test, y_test)
                 self.acc_train.append(train_acc_epoch)
                 self.acc_test.append(test_acc_epoch)
-                print ('Epoch {} --> train: {}'.format(epoch, train_acc_epoch))
+                print ('Epoch {} --> train: {}'.format(epoch, round(train_acc_epoch,5)))
             if best_model:
                 self.model.load_weights(self.timestamped_filename)
                 test_acc_epoch = self.evaluate_internal(X_test, y_test)
                 self.acc_test.append(test_acc_epoch)
 
-            print ('Epoch {} --> test: {}'.format(epoch, test_acc_epoch))
+            print ('Epoch {} --> test: {}'.format(epoch, round(test_acc_epoch, 5)))
