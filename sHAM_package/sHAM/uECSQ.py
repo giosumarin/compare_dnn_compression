@@ -113,10 +113,10 @@ class uECSQ(uCWS.uCWS):
 
     def tune_lambda(self, lambdaList):
         if self.clusters_fc > 0:
-            print("Tuning FC lambda")
+            #print("Tuning FC lambda")
             self.lamb_fc = self.tune_lambda_private_uecsq(lambdaList, Dense, self.clusters_fc, self.wanted_clusters_fc)
         if self.clusters_cnn > 0:
-            print("Tuning CNN lambda")
+            #print("Tuning CNN lambda")
             self.lamb_cnn = self.tune_lambda_private_uecsq(lambdaList, (Conv1D, Conv2D, Conv3D), self.clusters_cnn, self.wanted_clusters_cnn)
 
     def tune_lambda_private_uecsq(self, lambdaList, instan, perc, wanted_clusters):
