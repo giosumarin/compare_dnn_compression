@@ -142,7 +142,6 @@ def make_huffman(model, lodi, lodwi, lw):
 
     d_rev = huffman.reverse_elements_list_to_dict(e)
     d = dict(e)
-    #print("lungh_diz", len(d))
 
     encodeds = [huffman.matrix_with_code(lw[l], d, d_rev) for l in lodwi]
     list_bins = [huffman.make_words_list_to_int(encoded, bit_words_machine) for encoded in encodeds]
@@ -178,7 +177,6 @@ def make_huffman_sparse_par(model, lodi, lodwi, lw):
 
     d_rev = huffman.reverse_elements_list_to_dict(e)
     d = dict(e)
-    print("lungh_diz", len(d))
 
     dense_inputs = []
 
@@ -192,15 +190,9 @@ def make_huffman_sparse_par(model, lodi, lodwi, lw):
         # d_data, d_rev_data  = sparse_huffman_only_data.huffman_sparse_encoded_dict(data)
         # data_encoded = sparse_huffman_only_data.encoded_matrix(data, d_data, d_rev_data)
         # int_from_strings = huffman.convert_bin_to_int(huffman.make_words_list_to_int(data_encoded, bit_words_machine))
-        print(len(cum), len(row_index))
         space_dense += dense_space(lw[l])  
-        print(space_dense)
         space_sparse_huffman += bit_words_machine/8 * len(int_data) 
-        print(space_sparse_huffman)
         space_sparse_huffman += space_for_row_cum(lw[l], cum) + space_for_row_cum(lw[l], row_index)
-        print(space_sparse_huffman)
-        #print("prova: ", (len(np.unique(lw[l]))+len(lw[l].shape[1])))
-        #print(len(cum)+len(row_index))
     return space_dense, space_sparse_huffman    
 
 
@@ -228,19 +220,19 @@ try:
 
         for opt, arg in opts:
             if opt == "-t":
-                print("tipo: ", arg)
+                #print("type: ", arg)
                 type_compr = arg
             elif opt == "-d":
-                print("directory: ", arg)
+                #print("directory: ", arg)
                 directory = arg
             elif opt == "-m":
-                print("model_file: ", arg)
+                #print("model_file: ", arg)
                 model_file=arg
             elif opt == "-q":
                 pq = True if arg==1 else False
             elif opt == "-s":
                 if arg == "kiba":
-                    print(arg)
+                    #print(arg)
                     # data loading
                     dataset_path = '../performance_eval/DeepDTA/data_utils/kiba/'
                     dataset = DataSet( fpath = dataset_path, ### BUNU ARGS DA GUNCELLE
@@ -304,7 +296,7 @@ try:
                     x_test=[np.array(drug_test), np.array(targ_test)]
                     y_test=np.array(aff_test)
                 elif arg == "mnist":
-                    print(arg)
+                    #print(arg)
                     # data loading
                     ((x_train, y_train), (x_test, y_test)) = mnist.load_data()
                     x_train = x_train.reshape((x_train.shape[0], 28, 28, 1))
@@ -352,11 +344,10 @@ except getopt.GetoptError:
     sys.exit(2)
 
 model = tf.keras.models.load_model(model_file)
-original_acc = model.evaluate(x_test, y_test)
+original_acc = model.evaluate(x_test, y_test, verbose=0)
 if isinstance(original_acc, list):
     original_acc = original_acc[1]
 
-print(original_acc)
 
 onlyfiles = [f for f in listdir(directory) if isfile(join(directory, f))]
 
@@ -403,7 +394,7 @@ for weights in sorted(onlyfiles):
 
             pr, ws, acc = split_filename(weights)
             ws_acc = float(acc[:-3])
-            print("{}% & {} --> {}".format(pr, ws, ws_acc))
+            #print("{}% & {} --> {}".format(pr, ws, ws_acc))
             perf += [ws_acc]
 
             lodi = list_of_dense_indexes(model)
@@ -438,20 +429,25 @@ for weights in sorted(onlyfiles):
                 space_h.append(round((space_compr_cnn)/(space_expanded_cnn)))
             
             
-
+            print(f"Final performance Test: {perf[-1]}")
             if type_compr == "ham":
-                print("{} {} acc1, space {} ".format(ws_l_h[-1], diff_acc_h[-1], space_h[-1]))
+                #print("{} {} acc1, space {} ".format(ws_l_h[-1], diff_acc_h[-1], space_h[-1]))
+                print(f"psi with HAM: {space_h[-1]}")
+
             elif type_compr == "sham":
                 ### Commentato per salvare solo i tempi, non i rapporti
                 # print("{} {} acc1, space {}, time p {} time p cpp {} ".format(ws_l_h[-1], diff_acc_h[-1], space_h[-1], time_h_p[-1], time_h_p_cpp[-1]))
-                print("{} {} acc1, space {}".format(ws_l_h[-1], diff_acc_h[-1], space_sh[-1]))
+                #print("{} {} acc1, space {}".format(ws_l_h[-1], diff_acc_h[-1], space_sh[-1]))
+                print(f"psi with sHAM: {space_sh[-1]}")
                 ####
             elif type_compr in ["all", "also_cnn"] :
-                print("{} {} acc1, spaceh {}, spacesh {}".format(ws_l_h[-1], diff_acc_h[-1], space_h[-1], space_sh[-1], ))
-            elif type_compr == "only_conv":
+                #print("{} {} acc1, spaceh {}, spacesh {}".format(ws_l_h[-1], diff_acc_h[-1], space_h[-1], space_sh[-1], ))
+                print(f"psi with HAM: {space_h[-1]}")
+                print(f"psi with sHAM: {space_sh[-1]}")
+            #elif type_compr == "only_conv":
                 ### Commentato per salvare solo i tempi, non i rapporti
                 # print("{} {} acc1, space {}, time p {} time p cpp {} ".format(ws_l_h[-1], diff_acc_h[-1], space_h[-1], time_h_p[-1], time_h_p_cpp[-1]))
-                print("{} {} acc1, space {}".format(ws_l_h[-1], diff_acc_h[-1], space_h[-1]))
+                #print("{} {} acc1, space {}".format(ws_l_h[-1], diff_acc_h[-1], space_h[-1]))
 
 if type_compr == "ham":
     str_res = "results/huffman_upq.txt" if pq else "results/huffman_pruws.txt"
