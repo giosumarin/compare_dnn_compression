@@ -39,6 +39,9 @@ script must be executed after those at point 1, since they generate the compress
 here and the corresponding folders. If at point 1 only partial tests are executed, modify this script accordingly to
 evaluate just  the model generated.
 
+### Time estimation for examples
+Running the examples we provide, [experiments/performance_eval/VGG19/runner_example.sh](https://github.com/giosumarin/compare_dnn_compression/blob/main/experiments/performance_eval/VGG19/runner_example.sh) and [experiments/performance_eval/DeepDTA/runner_example.sh](https://github.com/giosumarin/compare_dnn_compression/blob/main/experiments/performance_eval/DeepDTA/runner_example.sh), takes about an hour on a laptop with RTX2060 mobile GPU.
+
 ## Usage on other neural network/datasets
 
 To perform a compression on a new model follow the following steps:
