@@ -43,7 +43,7 @@ tf.random.set_seed(SEED)
 # This script does not excercise old non-unified methods. Check https://github.com/giosumarin/ICPR2020_sHAM for those
 def main(compression, net, dataset, learning_rate, lr_cumulative, minibatch, prfc, prcnn, clusterfc, clustercnn, tr, lambd, logger, ptnc, mib, epochs):
     #some print info
-    print(f"Model-Dataset: {net.split('/')[-1]}")
+    print(f"Model-Dataset: {net.split('/')[-1][:-3]}")
     print(f"Compression Method: {compression}")
     if prfc != 0:
         print(f"Pruning on Dense layers: {prfc}")

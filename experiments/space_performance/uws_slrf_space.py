@@ -135,7 +135,10 @@ def main(compression, net, dataset, directory, keep,sr,rr):
     elif net_string == "deepDTA_kiba":
         net_string = "DeepDTA-KIBA"
     print(f"Model-Dataset: {net_string}")
-    print(f"Compression Method: SLR")
+    if compression == "also_quant":
+        print(f"Compression Method: SLR on dense layer")
+    else:
+        print(f"Compression Method: SLR")
     print(f"Params of SLR --> q: {keep}, sr: {sr}, rr: {rr}")
 
 
