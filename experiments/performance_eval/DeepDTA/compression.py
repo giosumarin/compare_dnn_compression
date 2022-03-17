@@ -35,9 +35,24 @@ tf.random.set_seed(SEED)
 @click.option('--lambd', default=0., help='coefficient for entrophy with ECSQ')
 @click.option('--logger', default=False, help='set True for logging train into txt')
 @click.option('--ptnc', default=0, help='patience (default 0)')
+@click.option('--epochs', default=30, help='epochs of post compression retraining (default 30)')
+
 
 # This script does not excercise old non-unified methods. Check https://github.com/giosumarin/ICPR2020_sHAM for those
-def main(compression, net, dataset, learning_rate, lr_cumulative, minibatch, prfc, prcnn, clusterfc, clustercnn, tr, lambd, logger, ptnc):
+def main(compression, net, dataset, learning_rate, lr_cumulative, minibatch, prfc, prcnn, clusterfc, clustercnn, tr, lambd, logger, ptnc, epochs):
+    #some print info
+    net_string = "DeepDTA-DAVIS" if net.split('/')[-1][:-3] == "deepDTA_davis" else "DeepDTA-KIBA"
+    print(f"Model-Dataset: {net_string}")
+    print(f"Compression Method: {compression}")
+    if prfc != 0:
+        print(f"Pruning on Dense layers: {prfc}")
+    if prcnn != 0:
+        print(f"Pruning on Convolutional layers: {prcnn}")
+    if clusterfc != 0:
+        print(f"Quantization on Dense layers: {clusterfc}")
+    if clustercnn != 0:
+        print(f"Quantization on Convolutional layers: {clustercnn}")
+
 
     # Load model
     model = tf.keras.models.load_model(net)
@@ -69,10 +84,10 @@ def main(compression, net, dataset, learning_rate, lr_cumulative, minibatch, prf
         dataset, x_train, y_train, x_test, y_test = KIBA(minibatch)
 
     # Pre-compression prediction assessment
-    pre_compr_train = compression_model.model.evaluate(x_train, y_train)
-    pre_compr_test = compression_model.model.evaluate(x_test, y_test)
-    print("before compression, performance on train -->", pre_compr_train)
-    print("before compression, performance on test -->", pre_compr_test)
+    pre_compr_train = compression_model.model.evaluate(x_train, y_train, verbose=0)
+    pre_compr_test = compression_model.model.evaluate(x_test, y_test, verbose=0)
+    print("Original performance train: ", round(pre_compr_train,5))
+    print("Original performance test: ", round(pre_compr_test, 5))
 
     # Model compression
     if compression == 'pr':
@@ -101,16 +116,16 @@ def main(compression, net, dataset, learning_rate, lr_cumulative, minibatch, prf
     # Post-compression prediction assessment
     compression_model.set_loss(tf.keras.losses.MeanSquaredError())
     compression_model.set_optimizer(tf.keras.optimizers.Adam(learning_rate=learning_rate))
-    post_compr_train = compression_model.model.evaluate(x_train, y_train)
-    post_compr_test = compression_model.model.evaluate(x_test, y_test)
-    print("Applying initial compression setting before retraining, performance on train -->" , post_compr_train)
-    print("Applying initial compression setting before retraining, performance on test -->" , post_compr_test)
+    post_compr_train = compression_model.model.evaluate(x_train, y_train, verbose=0)
+    post_compr_test = compression_model.model.evaluate(x_test, y_test, verbose=0)
+    #print("Applying initial compression setting before retraining, performance on train:" , round(post_compr_train,5))
+    #print("Applying initial compression setting before retraining, performance on test:" , round(post_compr_test,5))
 
     # Model re-train
     if compression == "pr":
-        compression_model.train_pr_deepdta(epochs=20, dataset=dataset, X_train=x_train, y_train=y_train, X_test=x_test, y_test=y_test, step_per_epoch=10000000, patience=ptnc)
+        compression_model.train_pr_deepdta(epochs=epochs, dataset=dataset, X_train=x_train, y_train=y_train, X_test=x_test, y_test=y_test, step_per_epoch=10000000, patience=ptnc)
     else:
-        compression_model.train_ws(epochs=50, lr=lr_cumulative, dataset=dataset, X_train=x_train, y_train=y_train, X_test=x_test, y_test=y_test, patience=ptnc)
+        compression_model.train_ws(epochs=epochs, lr=lr_cumulative, dataset=dataset, X_train=x_train, y_train=y_train, X_test=x_test, y_test=y_test, patience=ptnc)
 
     # Model save
     name_net = (net.split("/")[-1])[:-3]
