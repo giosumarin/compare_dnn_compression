@@ -38,6 +38,7 @@ here and the corresponding folders. If at point 1 only partial tests are execute
 evaluate just  the model generated.
 
 We provide a minimal runner script contained in each network sub-directory ([experiments/performance_eval/VGG19/runner_example.sh](https://github.com/giosumarin/compare_dnn_compression/blob/main/experiments/performance_eval/VGG19/runner_example.sh) and [experiments/performance_eval/DeepDTA/runner_example.sh](https://github.com/giosumarin/compare_dnn_compression/blob/main/experiments/performance_eval/DeepDTA/runner_example.sh)), these examples perform the two stages described above, applying different compressions on dense, convolutional, or both layers. After each compression (+ possible retraining) we calculate the compression rate of the compressed model.
+Inside the scripts are indicated the types of compression applied with the relative parameters and a brief explanation of what the script does.
 
 ### Time estimation for examples
 Running the examples we provide, [experiments/performance_eval/VGG19/runner_example.sh](https://github.com/giosumarin/compare_dnn_compression/blob/main/experiments/performance_eval/VGG19/runner_example.sh) and [experiments/performance_eval/DeepDTA/runner_example.sh](https://github.com/giosumarin/compare_dnn_compression/blob/main/experiments/performance_eval/DeepDTA/runner_example.sh), takes about an hour on a laptop with RTX2060 mobile GPU.
