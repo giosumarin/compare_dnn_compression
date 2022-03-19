@@ -31,13 +31,13 @@ Extract the downloaded zip and merge it into the `experiments` directory.
 Compression and compact storage of the network are separately executed in two stages.
 1. To apply pruning and/or quantization to a model, we provide the `compression.py` script in the
 `experiments/performance_eval/X` directory, where `X` is one of `VGG19` and `DeepDTA`. 
-These scripts are customized for VGG19 and DeepDTA networks, and a minimal runner script is contained 
-in each network sub-directory. The script to apply SLR, which does not require retraining, is `experiments/space_performance/uws_slrf_space.py`. This script can be used on a model with quantized convolutional layers or directly on an uncompressed model.
-2. To store and evaluate the trained network with either HAM or sHAM we provide the `uws_testing_space.py`
-example script in the `experiments/space_performance` directory, as well with a sample runner script. Please note that this 
+The script to apply SLR, which does not require retraining, is `experiments/space_performance/uws_slrf_space.py`. This script can be used on a model with quantized convolutional layers or directly on an uncompressed model.
+2. To store and evaluate the trained network with either HAM or sHAM we provide the `uws_testing_space.py`. Please note that this 
 script must be executed after those at point 1, since they generate the compressed models to be evaluated
 here and the corresponding folders. If at point 1 only partial tests are executed, modify this script accordingly to
 evaluate just  the model generated.
+
+We provide a minimal runner script contained in each network sub-directory ([experiments/performance_eval/VGG19/runner_example.sh](https://github.com/giosumarin/compare_dnn_compression/blob/main/experiments/performance_eval/VGG19/runner_example.sh) and [experiments/performance_eval/DeepDTA/runner_example.sh](https://github.com/giosumarin/compare_dnn_compression/blob/main/experiments/performance_eval/DeepDTA/runner_example.sh)), these examples perform the two stages described above, applying different compressions on dense, convolutional, or both layers. After each compression (+ possible retraining) we calculate the compression rate of the compressed model.
 
 ### Time estimation for examples
 Running the examples we provide, [experiments/performance_eval/VGG19/runner_example.sh](https://github.com/giosumarin/compare_dnn_compression/blob/main/experiments/performance_eval/VGG19/runner_example.sh) and [experiments/performance_eval/DeepDTA/runner_example.sh](https://github.com/giosumarin/compare_dnn_compression/blob/main/experiments/performance_eval/DeepDTA/runner_example.sh), takes about an hour on a laptop with RTX2060 mobile GPU.
