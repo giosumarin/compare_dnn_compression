@@ -43,15 +43,15 @@ def main(compression, net, dataset, learning_rate, lr_cumulative, minibatch, prf
     #some print info
     net_string = "DeepDTA-DAVIS" if net.split('/')[-1][:-3] == "deepDTA_davis" else "DeepDTA-KIBA"
     print(f"Model-Dataset: {net_string}")
-    print(f"Compression Method: {compression}")
+    print(f"\tCompression Method: {compression}")
     if prfc != 0:
-        print(f"Pruning on Dense layers: {prfc}")
+        print(f"\tPruning on Dense layers: {prfc}")
     if prcnn != 0:
-        print(f"Pruning on Convolutional layers: {prcnn}")
+        print(f"\tPruning on Convolutional layers: {prcnn}")
     if clusterfc != 0:
-        print(f"Quantization on Dense layers: {clusterfc}")
+        print(f"\tQuantization on Dense layers: {clusterfc}")
     if clustercnn != 0:
-        print(f"Quantization on Convolutional layers: {clustercnn}")
+        print(f"\tQuantization on Convolutional layers: {clustercnn}")
 
 
     # Load model
@@ -84,10 +84,12 @@ def main(compression, net, dataset, learning_rate, lr_cumulative, minibatch, prf
         dataset, x_train, y_train, x_test, y_test = KIBA(minibatch)
 
     # Pre-compression prediction assessment
+    print("Computing uncompressed model performance")
     pre_compr_train = compression_model.model.evaluate(x_train, y_train, verbose=0)
     pre_compr_test = compression_model.model.evaluate(x_test, y_test, verbose=0)
-    print("Original performance train: ", round(pre_compr_train,5))
-    print("Original performance test: ", round(pre_compr_test, 5))
+    print("\tOriginal performance train: ", round(pre_compr_train,5))
+    print("\tOriginal performance test: ", round(pre_compr_test, 5))
+    print("Applying compression")
 
     # Model compression
     if compression == 'pr':
@@ -114,14 +116,16 @@ def main(compression, net, dataset, learning_rate, lr_cumulative, minibatch, prf
         compression_model.apply_pr_uECSQ()
 
     # Post-compression prediction assessment
+    print("Computing compressed model performance before retraining")
     compression_model.set_loss(tf.keras.losses.MeanSquaredError())
     compression_model.set_optimizer(tf.keras.optimizers.Adam(learning_rate=learning_rate))
     post_compr_train = compression_model.model.evaluate(x_train, y_train, verbose=0)
     post_compr_test = compression_model.model.evaluate(x_test, y_test, verbose=0)
-    #print("Applying initial compression setting before retraining, performance on train:" , round(post_compr_train,5))
-    #print("Applying initial compression setting before retraining, performance on test:" , round(post_compr_test,5))
+    print("\tCompressed performance train: " , round(post_compr_train,5))
+    print("\tCompressed performance test: " , round(post_compr_test,5))
 
     # Model re-train
+    print("Start retraining after compression")
     if compression == "pr":
         compression_model.train_pr_deepdta(epochs=epochs, dataset=dataset, X_train=x_train, y_train=y_train, X_test=x_test, y_test=y_test, step_per_epoch=10000000, patience=ptnc)
     else:

@@ -44,15 +44,15 @@ tf.random.set_seed(SEED)
 def main(compression, net, dataset, learning_rate, lr_cumulative, minibatch, prfc, prcnn, clusterfc, clustercnn, tr, lambd, logger, ptnc, mib, epochs):
     #some print info
     print(f"Model-Dataset: {net.split('/')[-1][:-3]}")
-    print(f"Compression Method: {compression}")
+    print(f"\tCompression Method: {compression}")
     if prfc != 0:
-        print(f"Pruning on Dense layers: {prfc}")
+        print(f"\tPruning on Dense layers: {prfc}")
     if prcnn != 0:
-        print(f"Pruning on Convolutional layers: {prcnn}")
+        print(f"\tPruning on Convolutional layers: {prcnn}")
     if clusterfc != 0:
-        print(f"Quantization on Dense layers: {clusterfc}")
+        print(f"\tQuantization on Dense layers: {clusterfc}")
     if clustercnn != 0:
-        print(f"Quantization on Convolutional layers: {clustercnn}")
+        print(f"\tQuantization on Convolutional layers: {clustercnn}")
 
     # Load model
     model = tf.keras.models.load_model(net)
@@ -88,11 +88,12 @@ def main(compression, net, dataset, learning_rate, lr_cumulative, minibatch, prf
         #print("step_per_epoch: ",step_per_epoch)
 
     # Pre-compression prediction assessment
+    print("Computing uncompressed model performance")
     pre_compr_train = compression_model.model.evaluate(x_train, y_train, verbose=0)[1]
     pre_compr_test = compression_model.model.evaluate(x_test, y_test, verbose=0)[1]
-    print("Original performance train: ", round(pre_compr_train, 5))
-    print("Original performance test: ", round(pre_compr_test, 5))
-
+    print("\tOriginal performance train: ", round(pre_compr_train, 5))
+    print("\tOriginal performance test: ", round(pre_compr_test, 5))
+    print("Applying compression")
     # Model compression
     if compression == 'pr':
         compression_model.apply_pruning()
@@ -119,14 +120,19 @@ def main(compression, net, dataset, learning_rate, lr_cumulative, minibatch, prf
         compression_model.tune_lambda(lambdas)
         compression_model.apply_pr_uECSQ()
 
+
     # Post-compression prediction assessment
+    print("Computing compressed model performance before retraining")
     compression_model.set_loss(tf.keras.losses.CategoricalCrossentropy())
     compression_model.set_optimizer(tf.keras.optimizers.SGD(learning_rate=learning_rate, momentum=0.9, nesterov=True))
     post_compr_train = compression_model.model.evaluate(x_train, y_train, verbose=0)[1]
     post_compr_test = compression_model.model.evaluate(x_test, y_test, verbose=0)[1]
-    #print("Applying initial compression setting before retrain, performance on train -->" , round(post_compr_train,5))
-    #print("Applying initial compression setting before retrain, performance on test -->" , round(post_compr_test,5))
+    print("\tCompressed performance train: ", round(post_compr_train,5))
+    print("\tCompressed performance test: " , round(post_compr_test,5))
+    print("Start training after compression")
 
+    # Model re-train
+    print("Start retraining after compression")
     if compression == "pr":
         compression_model.train_pr(epochs=epochs, dataset=dataset, X_train=x_train, y_train=y_train, X_test=x_test, y_test=y_test, step_per_epoch = step_per_epoch, patience=0)
     else:
