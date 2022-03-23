@@ -109,7 +109,7 @@ class pruning_uCWS(pruning.pruning, uCWS.uCWS):
                                 self.model.save_weights(self.timestamped_filename)
                     elif best_model:
                         self.model.save_weights(self.timestamped_filename)
-                test_acc_epoch = self.evaluate_internal(X_test, y_test)
+                test_acc_epoch = self._internal(X_test, y_test)
                 self.acc_train.append(train_acc_epoch)
                 self.acc_test.append(test_acc_epoch)
                 print ('\tEpoch {} --> train: {}'.format(epoch, round(train_acc_epoch,5)))

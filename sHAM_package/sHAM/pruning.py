@@ -134,7 +134,7 @@ class pruning(compressed_nn.Compressed_NN):
                     if step_per_epoch:
                         if batch == step_per_epoch:
                             break
-                train_acc_epoch = self.model.evaluate(X_train, y_train)
+                train_acc_epoch = self.model.evaluate(X_train, y_train, verbose=0)
                 if self.patience >= 0:
                     if len(self.acc_train) != 0:
                         if self.acc_train[-1] - train_acc_epoch  <= 0.0001:
@@ -145,7 +145,7 @@ class pruning(compressed_nn.Compressed_NN):
                         else:
                             self.patience = patience
 
-                test_acc_epoch = self.model.evaluate(X_test, y_test)
+                test_acc_epoch = self.model.evaluate(X_test, y_test, verbose=0)
                 self.acc_train.append(train_acc_epoch)
                 self.acc_test.append(test_acc_epoch)
                 print ('Epoch {} --> train MSE: {}'.format(epoch, train_acc_epoch))
