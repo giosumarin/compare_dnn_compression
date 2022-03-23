@@ -129,7 +129,6 @@ def main(compression, net, dataset, learning_rate, lr_cumulative, minibatch, prf
     post_compr_test = compression_model.model.evaluate(x_test, y_test, verbose=0)[1]
     print("\tCompressed performance train: ", round(post_compr_train,5))
     print("\tCompressed performance test: " , round(post_compr_test,5))
-    print("Start training after compression")
 
     # Model re-train
     print("Start retraining after compression")
