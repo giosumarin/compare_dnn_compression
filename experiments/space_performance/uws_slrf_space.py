@@ -249,11 +249,11 @@ def main(compression, net, dataset, directory, keep,sr,rr):
 
         x_train = x_train.astype('float32')
         x_test = x_test.astype('float32')
-
+    print("Computing uncompressed model performance")
     original_acc = model.evaluate(x_test, y_test, verbose=0)
     if isinstance(original_acc, list):
         original_acc = original_acc[1]
-    print(f"Performance test before compression: {round(original_acc, 5)}")
+    print(f"\tOriginal performance test: {round(original_acc, 5)}")
 
     
     if compression == "also_quant":
@@ -265,6 +265,8 @@ def main(compression, net, dataset, directory, keep,sr,rr):
         for weights in sorted(onlyfiles):
             gc.collect()
             if weights[-3:] == ".h5":
+                print("Applying compression")
+
                 lw = pickle.load(open(directory+weights, "rb"))
                 model.set_weights(lw)
 
@@ -287,8 +289,8 @@ def main(compression, net, dataset, directory, keep,sr,rr):
                 perf += [score]
                 compr_spaces += [round((space_compr_cnn+compr_space)/(space_expanded_cnn+original_space), 5)]
                 wss += [ws]
-                print(f"Performance test after compression: {round(score, 5)}")
-                print(f"psi: {compr_spaces[-1]}")
+                print(f"\tCompressed performance test: {round(score, 5)}")
+                print(f"\tSpace occupancy of compressed model: {compr_spaces[-1]}")
 
 
 
@@ -299,10 +301,11 @@ def main(compression, net, dataset, directory, keep,sr,rr):
             tex.write(f"ws = {wss}\nperf = {perf}\ncompr_space={compr_spaces}")
 
     else:
+        print("Applying compression")
         score, compr_space, original_space = space_slrf(model, keep, sr, rr, x_test, y_test)
         #print(score, compr_space, original_space)
-        print(f"Performance test after compression: f{score}")
-        print(f"psi: f{round(compr_space/original_space, 5)}")
+        print(f"\tCompressed performance test: {round(score,5)}")
+        print(f"\tSpace occupancy of compressed model: {round(compr_space/original_space, 5)}")
 
 
 

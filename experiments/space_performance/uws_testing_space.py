@@ -371,6 +371,7 @@ nonzero_sh = []
 
         
 for weights in sorted(onlyfiles):
+        print("Applying compression")
         gc.collect()
         if weights[-3:] == ".h5":
             lw = pickle.load(open(directory+weights, "rb"))
@@ -429,21 +430,21 @@ for weights in sorted(onlyfiles):
                 space_h.append(round((space_compr_cnn)/(space_expanded_cnn)))
             
             
-            print(f"Final performance Test: {perf[-1]}")
+            print(f"\tCompressed performance test: {perf[-1]}")
             if type_compr == "ham":
                 #print("{} {} acc1, space {} ".format(ws_l_h[-1], diff_acc_h[-1], space_h[-1]))
-                print(f"psi with HAM: {space_h[-1]}")
+                print(f"\tSpace occupancy of compressed model with HAM: {space_h[-1]}")
 
             elif type_compr == "sham":
                 ### Commentato per salvare solo i tempi, non i rapporti
                 # print("{} {} acc1, space {}, time p {} time p cpp {} ".format(ws_l_h[-1], diff_acc_h[-1], space_h[-1], time_h_p[-1], time_h_p_cpp[-1]))
                 #print("{} {} acc1, space {}".format(ws_l_h[-1], diff_acc_h[-1], space_sh[-1]))
-                print(f"psi with sHAM: {space_sh[-1]}")
+                print(f"\tSpace occupancy of compressed model with sHAM: {space_sh[-1]}")
                 ####
             elif type_compr in ["all", "also_cnn"] :
                 #print("{} {} acc1, spaceh {}, spacesh {}".format(ws_l_h[-1], diff_acc_h[-1], space_h[-1], space_sh[-1], ))
-                print(f"psi with HAM: {space_h[-1]}")
-                print(f"psi with sHAM: {space_sh[-1]}")
+                print(f"\tSpace occupancy of compressed model with HAM: {space_h[-1]}")
+                print(f"\tSpace occupancy of compressed model with sHAM: {space_sh[-1]}")
             #elif type_compr == "only_conv":
                 ### Commentato per salvare solo i tempi, non i rapporti
                 # print("{} {} acc1, space {}, time p {} time p cpp {} ".format(ws_l_h[-1], diff_acc_h[-1], space_h[-1], time_h_p[-1], time_h_p_cpp[-1]))
