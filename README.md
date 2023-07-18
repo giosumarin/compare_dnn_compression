@@ -3,6 +3,9 @@ This repository contains the code allowing to reproduce the results described in
 _On the Choice of Deep Neural Networks Compression: a Comparative Study_, 
 extending the conference paper presented at [ICPR2020](https://www.micc.unifi.it/icpr2020/), whose package and paper are available at [this repository](https://github.com/giosumarin/ICPR2020_sHAM).
 
+This realization of this repository has been supported by the Italian MUR PRIN project “Multicriteria data structures and algorithms: from compressed to learned indexes, and beyond” (Prot. 2017WR7SHH).
+
+
 This package improves the previous contribution by adding new quantization strategies, and  
 convolutional layers are now supported in addition to fully-connected layers.
 
